@@ -13,6 +13,12 @@ class DiscreteShape:
             self.segments.append(Segment(x1, y1, x2, y2))
 
     def subdivide(self, n):
+        if self.vertex_list.is_discrete:
+            # when defining, say, a parabola via a list of vertices, the spacing between the vertices
+            # are already small, so 99% of the time we don't want to subdivide it any further
+            print(
+                f"Warning: skip subdividing discrete shape {self.vertex_list.name}")
+            return
         new_segments = []
         for segment in self.segments:
             new_segs = segment.subdivide(n)

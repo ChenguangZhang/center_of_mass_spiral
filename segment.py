@@ -30,4 +30,4 @@ class Segment:
         return new_segments
 
     def __repr__(self):
-        return f'Segment({self.x1}, {self.y1}, {self.x2}, {self.y2})m'
+        return f'Segment({self.x1}, {self.y1}, {self.x2}, {self.y2})'

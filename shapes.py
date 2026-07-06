@@ -1,4 +1,3 @@
-# abstract class
 import numpy as np
 from abc import ABC, abstractmethod
 from vertex_list import VertexList
