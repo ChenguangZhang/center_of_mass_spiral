@@ -19,7 +19,7 @@ class NGon(Shape):
         theta = np.linspace(0, 2*np.pi, self.n+1)
         xy = self.r * np.array([(np.cos(t), np.sin(t), t) for t in theta])
         return VertexList(
-            name="NGon",
+            name="polygon-" + str(self.n),
             vertices=xy,
             is_closed=True,
             is_discrete=False
