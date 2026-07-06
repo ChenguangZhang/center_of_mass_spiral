@@ -19,10 +19,14 @@ class DiscreteShape:
             new_segments.extend(new_segs)
         self.segments = new_segments
 
-    def get_com_spiral(self):
+    def get_com_spiral(self, weight_fn=None):
+        # weight_fn: function that takes segment lengthes and return their weights
         cx = np.array([seg.cx for seg in self.segments])
         cy = np.array([seg.cy for seg in self.segments])
         delta = np.array([seg.delta for seg in self.segments])
+
+        if weight_fn is not None:
+            delta = weight_fn(delta)
 
         mass = np.cumsum(delta)
         c_x = np.cumsum(delta*cx) / mass
