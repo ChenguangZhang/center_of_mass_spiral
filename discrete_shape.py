@@ -30,9 +30,11 @@ class DiscreteShape:
         cx = np.array([seg.cx for seg in self.segments])
         cy = np.array([seg.cy for seg in self.segments])
         delta = np.array([seg.delta for seg in self.segments])
+        s_vert = np.concatenate(([0], np.cumsum(delta)))
+        s = 0.5 * (s_vert[:-1] + s_vert[1:])
 
         if weight_fn is not None:
-            delta = weight_fn(delta)
+            delta = weight_fn(s, delta)
 
         mass = np.cumsum(delta)
         c_x = np.cumsum(delta*cx) / mass

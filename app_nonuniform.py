@@ -6,10 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def weight_fn(delta):
-    # for unit circle, $Theta$ is arc-length
-    Theta = np.cumsum(delta)
-    rho = 1/(np.pi + Theta)
+def weight_fn(s, delta):
+    # for unit circle, $\Theta = s$ 
+    rho = 1/(np.pi + s)
     return rho * delta
 
 
