@@ -19,7 +19,7 @@ vl = operations.repeat(vl, 10)
 
 pseg = PolySegment(vl)
 
-cx, cy = pseg.get_com_spiral(weight_fn=weight_fn)
+cx, cy = operations.get_com_spiral(pseg, weight_fn=weight_fn)
 
 plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
 plt.plot(cx, cy, 'k-')

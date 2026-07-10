@@ -14,7 +14,7 @@ for shape in shapes:
     pseg = PolySegment(vl)
     pseg.subdivide(10)
 
-    cx, cy = pseg.get_com_spiral()
+    cx, cy = operations.get_com_spiral(pseg)
 
     plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
     plt.plot(cx, cy, 'k-')

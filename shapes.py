@@ -1,6 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
-from vertex_list import VertexList
+from vertexlist import VertexList
 
 
 class Shape(ABC):
