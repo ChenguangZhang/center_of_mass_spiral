@@ -3,7 +3,7 @@ from vertex_list import VertexList
 from segment import Segment
 
 
-class DiscreteShape:
+class PolySegment:
     def __init__(self, vertex_list: VertexList):
         self.vertex_list = vertex_list
         self.segments: list[Segment] = []
