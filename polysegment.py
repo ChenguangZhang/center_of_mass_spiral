@@ -1,6 +1,9 @@
 import numpy as np
 from vertex_list import VertexList
 from segment import Segment
+from typing import Callable, Tuple
+
+WeightsFunction = Callable[[np.ndarray, np.ndarray], np.ndarray]
 
 
 class PolySegment:
@@ -25,7 +28,7 @@ class PolySegment:
             new_segments.extend(new_segs)
         self.segments = new_segments
 
-    def get_com_spiral(self, weight_fn=None):
+    def get_com_spiral(self, weight_fn: WeightsFunction | None = None) -> Tuple[np.ndarray, np.ndarray]:
         # weight_fn: function that takes segment lengthes and return their weights
         cx = np.array([seg.cx for seg in self.segments])
         cy = np.array([seg.cy for seg in self.segments])
