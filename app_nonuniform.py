@@ -17,11 +17,11 @@ shape = Ellipse(1, 1, 100)
 vl = shape.get_vertex_list()
 vl = operations.repeat(vl, 10)
 
-dshape = PolySegment(vl)
+pseg = PolySegment(vl)
 
-cx, cy = dshape.get_com_spiral(weight_fn=weight_fn)
+cx, cy = pseg.get_com_spiral(weight_fn=weight_fn)
 
-plot_polysegment(dshape, color='black', linewidth=1, alpha=0.5)
+plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
 plt.plot(cx, cy, 'k-')
 plt.axis('equal')
 plt.show()

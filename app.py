@@ -11,12 +11,12 @@ for shape in shapes:
     vl = shape.get_vertex_list()
     vl = operations.repeat(vl, 10)
 
-    dshape = PolySegment(vl)
-    dshape.subdivide(10)
+    pseg = PolySegment(vl)
+    pseg.subdivide(10)
 
-    cx, cy = dshape.get_com_spiral()
+    cx, cy = pseg.get_com_spiral()
 
-    plot_polysegment(dshape, color='black', linewidth=1, alpha=0.5)
+    plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
     plt.plot(cx, cy, 'k-')
     plt.axis('equal')
     plt.savefig(f'fig_{vl.name}.png', dpi=300)
