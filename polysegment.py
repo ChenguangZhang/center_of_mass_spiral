@@ -15,6 +15,15 @@ class PolySegment:
             x2, y2, t2 = vertex_list.vertices[i+1]
             self.segments.append(Segment(x1, y1, x2, y2))
 
+    def __len__(self):
+        return len(self.segments)
+
+    def __getitem__(self, index):
+        return self.segments[index]
+
+    def __iter__(self):
+        return iter(self.segments)
+
     def subdivide(self, n):
         if self.vertex_list.is_discrete:
             # when defining, say, a parabola via a list of vertices, the spacing between the vertices
