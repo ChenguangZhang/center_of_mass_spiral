@@ -1,9 +1,12 @@
 import numpy as np
 from vertex_list import VertexList
 from segment import Segment
+from typing import Callable, Tuple
+
+WeightsFunction = Callable[[np.ndarray, np.ndarray], np.ndarray]
 
 
-class DiscreteShape:
+class PolySegment:
     def __init__(self, vertex_list: VertexList):
         self.vertex_list = vertex_list
         self.segments: list[Segment] = []
@@ -11,6 +14,15 @@ class DiscreteShape:
             x1, y1, t1 = vertex_list.vertices[i]
             x2, y2, t2 = vertex_list.vertices[i+1]
             self.segments.append(Segment(x1, y1, x2, y2))
+
+    def __len__(self):
+        return len(self.segments)
+
+    def __getitem__(self, index):
+        return self.segments[index]
+
+    def __iter__(self):
+        return iter(self.segments)
 
     def subdivide(self, n):
         if self.vertex_list.is_discrete:
@@ -25,7 +37,7 @@ class DiscreteShape:
             new_segments.extend(new_segs)
         self.segments = new_segments
 
-    def get_com_spiral(self, weight_fn=None):
+    def get_com_spiral(self, weight_fn: WeightsFunction | None = None) -> Tuple[np.ndarray, np.ndarray]:
         # weight_fn: function that takes segment lengthes and return their weights
         cx = np.array([seg.cx for seg in self.segments])
         cy = np.array([seg.cy for seg in self.segments])
