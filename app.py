@@ -1,5 +1,5 @@
 from shapes import Ellipse, NGon, Parabola, Flower
-from polysegment import PolySegment
+from poly_segment import PolySegment
 from plotter import plot_polysegment
 import operations
 import matplotlib.pyplot as plt

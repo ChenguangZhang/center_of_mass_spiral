@@ -1,9 +1,9 @@
 import numpy as np
-from vertexlist import VertexList
+from vertex_list import VertexList
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from polysegment import PolySegment, WeightsFunction
+    from poly_segment import PolySegment, WeightsFunction
 
 
 def repeat(vl: VertexList, num_loop: int) -> VertexList:

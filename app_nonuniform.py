@@ -1,5 +1,5 @@
 from shapes import Ellipse
-from polysegment import PolySegment
+from poly_segment import PolySegment
 from plotter import plot_polysegment
 import operations
 import numpy as np

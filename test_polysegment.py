@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from vertexlist import VertexList
+from vertex_list import VertexList
 from segment import Segment
-from polysegment import PolySegment
+from poly_segment import PolySegment
 import operations
 
 

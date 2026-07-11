@@ -1,5 +1,5 @@
 import numpy as np
-from vertexlist import VertexList
+from vertex_list import VertexList
 from segment import Segment
 from typing import Callable, Tuple
 
