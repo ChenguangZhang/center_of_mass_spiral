@@ -4,8 +4,14 @@ from plotter import plot_polysegment
 import operations
 import matplotlib.pyplot as plt
 
-shapes = [Ellipse(1, 2, 100), NGon(6, 1), NGon(
-    4, 1), NGon(3, 1), Parabola(0, 1, 100), Flower(1, 0.1, 10, 100)]
+shapes = [
+    NGon(3, 1),
+    NGon(4, 1),
+    NGon(6, 1),
+    Ellipse(2, 1, 100),
+    Flower(1, 0.5, 10, 500),
+    Parabola(0, 1, 100)
+]
 
 plt.figure(figsize=(12, 8))
 for i, shape in enumerate(shapes):
