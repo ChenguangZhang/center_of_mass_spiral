@@ -53,6 +53,21 @@ class TestPolySegment(unittest.TestCase):
         discrete_poly.subdivide(n=5)
         self.assertEqual(len(discrete_poly), 2)
 
+    def test_get_com_spiral(self):
+        c_x, c_y = self.poly.get_com_spiral()
+
+        np.testing.assert_allclose(c_x, np.array([0.5, 0.75]))
+        np.testing.assert_allclose(c_y, np.array([0.0, 0.25]))
+
+    def test_get_com_spiral_with_weights(self):
+        def weight_fn(s, delta):
+            return delta * (1 + s)
+
+        c_x, c_y = self.poly.get_com_spiral(weight_fn=weight_fn)
+
+        np.testing.assert_allclose(c_x, np.array([0.5, 13.0 / 16.0]))
+        np.testing.assert_allclose(c_y, np.array([0.0, 5.0 / 16.0]))
+
 
 if __name__ == '__main__':
     unittest.main()

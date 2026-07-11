@@ -48,7 +48,6 @@ class PolySegment:
         if weight_fn is not None:
             delta = weight_fn(s, delta)
 
-        mass = np.cumsum(delta)
-        c_x = np.cumsum(delta*cx) / mass
-        c_y = np.cumsum(delta*cy) / mass
-        return c_x, c_y
+        phi = np.column_stack((cx, cy, np.ones(len(self.segments))))
+        integral = np.cumsum(delta[:, np.newaxis] * phi, axis=0)
+        return integral[:, 0] / integral[:, 2], integral[:, 1] / integral[:, 2]
