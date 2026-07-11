@@ -22,9 +22,3 @@ def repeat(vl: VertexList, num_loop: int) -> VertexList:
             is_closed=vl.is_closed,
             is_discrete=vl.is_discrete
         )
-
-
-def get_com_spiral(pseg: 'PolySegment', density_fn: 'DensityFunction | None' = None) -> tuple[np.ndarray, np.ndarray]:
-    centers = np.array([[seg.cx, seg.cy] for seg in pseg.segments])
-    result = pseg.integrate(centers, density_fn)
-    return result[:, 0], result[:, 1]

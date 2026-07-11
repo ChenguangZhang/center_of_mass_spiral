@@ -1,5 +1,5 @@
 from shapes import Ellipse
-from poly_segment import PolySegment
+from poly_segment import PolySegment, get_com_spiral
 from plotter import plot_polysegment
 import operations
 import numpy as np
@@ -17,7 +17,7 @@ vl = operations.repeat(vl, 10)
 
 pseg = PolySegment(vl)
 
-cx, cy = operations.get_com_spiral(pseg, density_fn=density_fn)
+cx, cy = get_com_spiral(pseg, density_fn=density_fn)
 
 plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
 plt.plot(cx, cy, 'k-')

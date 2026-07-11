@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from vertex_list import VertexList
 from segment import Segment
-from poly_segment import PolySegment
+from poly_segment import PolySegment, get_com_spiral
 import operations
 
 
@@ -81,7 +81,7 @@ class TestPolySegment(unittest.TestCase):
     def test_get_com_spiral(self):
         # Segment 0: (0,0)→(1,0), cx=0.5, cy=0.0, length=1.0
         # Segment 1: (1,0)→(1,1), cx=1.0, cy=0.5, length=1.0
-        cx, cy = operations.get_com_spiral(self.poly)
+        cx, cy = get_com_spiral(self.poly)
         np.testing.assert_allclose(cx, [0.5, 0.75])
         np.testing.assert_allclose(cy, [0.0, 0.25])
 

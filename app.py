@@ -1,5 +1,5 @@
 from shapes import Ellipse, NGon, Parabola, Flower
-from poly_segment import PolySegment
+from poly_segment import PolySegment, get_com_spiral
 from plotter import plot_polysegment
 import operations
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ for shape in shapes:
     pseg = PolySegment(vl)
     pseg.subdivide(10)
 
-    cx, cy = operations.get_com_spiral(pseg)
+    cx, cy = get_com_spiral(pseg)
 
     plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
     plt.plot(cx, cy, 'k-')

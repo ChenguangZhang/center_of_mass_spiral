@@ -57,3 +57,9 @@ class PolySegment:
             return np.cumsum(rho * self.delta * values) / cumulative_weights
         else:
             return np.cumsum(rho[:, np.newaxis] * self.delta[:, np.newaxis] * values, axis=0) / cumulative_weights[:, np.newaxis]
+
+
+def get_com_spiral(pseg: 'PolySegment', density_fn: 'DensityFunction | None' = None) -> tuple[np.ndarray, np.ndarray]:
+    centers = np.array([[seg.cx, seg.cy] for seg in pseg.segments])
+    result = pseg.integrate(centers, density_fn)
+    return result[:, 0], result[:, 1]
