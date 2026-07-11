@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 
 
-def plot_polysegment(polysegment, ax=None, **kwargs):
+def plot_polysegment(pseg, ax=None, **kwargs):
     if ax is None:
         fig, ax = plt.subplots()
-    for segment in polysegment.segments:
-        x = [segment.x1, segment.x2]
-        y = [segment.y1, segment.y2]
+    for seg in pseg:
+        x = [seg.x1, seg.x2]
+        y = [seg.y1, seg.y2]
         ax.plot(x, y, **kwargs)
     return ax

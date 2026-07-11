@@ -1,22 +1,26 @@
 from shapes import Ellipse, NGon, Parabola, Flower
-from polysegment import PolySegment
+from poly_segment import PolySegment, get_com_spiral
 from plotter import plot_polysegment
 import operations
 import matplotlib.pyplot as plt
 
-shapes = [Ellipse(1, 2, 100), NGon(6, 1), NGon(5, 1), NGon(
+shapes = [Ellipse(1, 2, 100), NGon(6, 1), NGon(
     4, 1), NGon(3, 1), Parabola(0, 1, 100), Flower(1, 0.1, 10, 100)]
 
-for shape in shapes:
+plt.figure(figsize=(12, 8))
+for i, shape in enumerate(shapes):
     vl = shape.get_vertex_list()
     vl = operations.repeat(vl, 10)
 
     pseg = PolySegment(vl)
     pseg.subdivide(10)
 
-    cx, cy = pseg.get_com_spiral()
+    cx, cy = get_com_spiral(pseg)
 
-    plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
+    plt.subplot(2, 3, i + 1)
+    plot_polysegment(pseg, ax=plt.gca(), color='black', linewidth=1, alpha=0.5)
     plt.plot(cx, cy, 'k-')
     plt.axis('equal')
-    plt.savefig(f'fig_{vl.name}.png', dpi=300)
+
+plt.tight_layout()
+plt.show()
