@@ -69,8 +69,6 @@ class PolySegment:
 
 
 def get_com_spiral(pseg: 'PolySegment', density_fn: 'DensityFunction | None' = None) -> tuple[np.ndarray, np.ndarray]:
-    centers = np.array([[seg.cx, seg.cy] for seg in pseg.segments])
-    nume = pseg.integrate(centers, density_fn)
-    deno = pseg.integrate(1.0, density_fn)
-    result = nume / deno[:, np.newaxis]
-    return result[:, 0], result[:, 1]
+    phi = np.array([[seg.cx, seg.cy, 1.0] for seg in pseg.segments])
+    I = pseg.integrate(phi, density_fn)
+    return I[:, 0] / I[:, 2], I[:, 1] / I[:, 2]
