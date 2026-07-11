@@ -3,7 +3,7 @@ from vertex_list import VertexList
 from segment import Segment
 from typing import Callable, Tuple
 
-WeightsFunction = Callable[[np.ndarray, np.ndarray], np.ndarray]
+DensityFunction = Callable[[np.ndarray, np.ndarray], np.ndarray]
 
 
 class PolySegment:
@@ -14,6 +14,14 @@ class PolySegment:
             x1, y1, t1 = vertex_list.vertices[i]
             x2, y2, t2 = vertex_list.vertices[i+1]
             self.segments.append(Segment(x1, y1, x2, y2))
+        self.__update_geometric_properties()
+
+    def __update_geometric_properties(self):
+        self.cx = np.array([seg.cx for seg in self.segments])
+        self.cy = np.array([seg.cy for seg in self.segments])
+        self.delta = np.array([seg.delta for seg in self.segments])
+        s_vert = np.concatenate(([0], np.cumsum(self.delta)))
+        self.s = 0.5 * (s_vert[:-1] + s_vert[1:])
 
     def __len__(self):
         return len(self.segments)
@@ -36,30 +44,16 @@ class PolySegment:
             new_segs = segment.subdivide(n)
             new_segments.extend(new_segs)
         self.segments = new_segments
+        self.__update_geometric_properties()
 
-    def integrate(self, values: np.ndarray, weight_fn: WeightsFunction | None = None) -> np.ndarray:
-        """Compute the cumulative weighted average of values over the segments.
-
-        Args:
-            values: Array of values at each segment midpoint. Shape (N,) for
-                scalar values or (N, D) for D-dimensional values.
-            weight_fn: Optional function that takes arc-length positions ``s``
-                and segment lengths ``delta`` and returns per-segment weights.
-                When ``None``, segment lengths are used as weights.
-
-        Returns:
-            Array with the same shape as ``values`` containing the cumulative
-            weighted average up to each segment.
-        """
+    def integrate(self, values: np.ndarray, density_fn: DensityFunction | None = None) -> np.ndarray:
         values = np.asarray(values)
-        delta = np.array([seg.delta for seg in self.segments])
-        s_vert = np.concatenate(([0], np.cumsum(delta)))
-        s = 0.5 * (s_vert[:-1] + s_vert[1:])
 
-        weights = weight_fn(s, delta) if weight_fn is not None else delta
+        rho = density_fn(
+            self.s, self.delta) if density_fn is not None else np.ones_like(self.delta)
 
-        cumulative_weights = np.cumsum(weights)
+        cumulative_weights = np.cumsum(rho*self.delta)
         if values.ndim == 1:
-            return np.cumsum(weights * values) / cumulative_weights
+            return np.cumsum(rho * self.delta * values) / cumulative_weights
         else:
-            return np.cumsum(weights[:, np.newaxis] * values, axis=0) / cumulative_weights[:, np.newaxis]
+            return np.cumsum(rho[:, np.newaxis] * self.delta[:, np.newaxis] * values, axis=0) / cumulative_weights[:, np.newaxis]

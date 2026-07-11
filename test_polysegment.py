@@ -70,12 +70,12 @@ class TestPolySegment(unittest.TestCase):
         result = self.poly.integrate(values)
         np.testing.assert_allclose(result, [[1.0, 2.0], [2.0, 3.0]])
 
-    def test_integrate_with_weight_fn(self):
-        # weight_fn doubles weights
-        def weight_fn(s, delta):
+    def test_integrate_with_density_fn(self):
+        # density_fn doubles weights
+        def density_fn(s, delta):
             return 2 * delta
         values = np.array([2.0, 4.0])
-        result = self.poly.integrate(values, weight_fn=weight_fn)
+        result = self.poly.integrate(values, density_fn=density_fn)
         np.testing.assert_allclose(result, [2.0, 3.0])
 
     def test_get_com_spiral(self):

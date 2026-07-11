@@ -6,10 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def weight_fn(s, delta):
-    # for unit circle, $\Theta = s$
-    rho = 1/(np.pi + s)
-    return rho * delta
+def density_fn(s, delta):
+    return 1/(np.pi + s)
 
 
 shape = Ellipse(1, 1, 100)
@@ -19,7 +17,7 @@ vl = operations.repeat(vl, 10)
 
 pseg = PolySegment(vl)
 
-cx, cy = operations.get_com_spiral(pseg, weight_fn=weight_fn)
+cx, cy = operations.get_com_spiral(pseg, density_fn=density_fn)
 
 plot_polysegment(pseg, color='black', linewidth=1, alpha=0.5)
 plt.plot(cx, cy, 'k-')
