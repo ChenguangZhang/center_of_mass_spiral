@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def density_fn(s, delta):
+def density_fn(s):
     return 1/(np.pi + s)
 
 

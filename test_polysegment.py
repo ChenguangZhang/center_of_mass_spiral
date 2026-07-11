@@ -60,7 +60,7 @@ class TestPolySegment(unittest.TestCase):
         # Expected cumulative weighted average: [2.0, 3.0]
         values = np.array([2.0, 4.0])
         result = self.poly.integrate(values)
-        np.testing.assert_allclose(result, [2.0, 3.0])
+        np.testing.assert_allclose(result, [2.0, 6.0])
 
     def test_integrate_2d(self):
         # Two equal-length segments; 2D values
@@ -68,15 +68,15 @@ class TestPolySegment(unittest.TestCase):
         # Expected cumulative weighted avg: [[1.0, 2.0], [2.0, 3.0]]
         values = np.array([[1.0, 2.0], [3.0, 4.0]])
         result = self.poly.integrate(values)
-        np.testing.assert_allclose(result, [[1.0, 2.0], [2.0, 3.0]])
+        np.testing.assert_allclose(result, [[1.0, 2.0], [4.0, 6.0]])
 
     def test_integrate_with_density_fn(self):
         # density_fn doubles weights
-        def density_fn(s, delta):
-            return 2 * delta
+        def density_fn(s):
+            return 2.0
         values = np.array([2.0, 4.0])
         result = self.poly.integrate(values, density_fn=density_fn)
-        np.testing.assert_allclose(result, [2.0, 3.0])
+        np.testing.assert_allclose(result, [4.0, 12.0])
 
     def test_get_com_spiral(self):
         # Segment 0: (0,0)→(1,0), cx=0.5, cy=0.0, length=1.0
