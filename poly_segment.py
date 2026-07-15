@@ -76,13 +76,17 @@ class PolySegment:
             raise TypeError(
                 "Integrand must be a number, a numpy array, or a callable returning one of those.")
 
-    def integrate(self, phi: float | np.ndarray | Callable[[GeometryContext], float | np.ndarray]) -> np.ndarray:
-        """
+    def integrate(
+        self,
+        phi: float | np.ndarray | Callable[[GeometryContext], float | np.ndarray],
+        cumulative: bool = False,
+    ) -> float | np.ndarray:
+        r"""
         Do
         $$
             \int_0^s phi(c, s', ...) ds'
         $$
-        using the trapezoidal rule (i.e., integrand evaluated at segment centers)
+        using the trapezoidal rule (i.e., integrand evaluated at segment centers).
 
         Parameters
         ----------
@@ -91,18 +95,27 @@ class PolySegment:
             - single number
             - np.array with shape (N,) or (N, ...), where N = len(segments)
             - callable: phi(context) -> numeric scalar or numpy array with leading shape (N, ...)
+        cumulative
+            When False, return the total integral over all segments.
+            When True, return cumulative integral values sampled at each segment center.
 
         Returns
         -------
-        np.ndarray
-            Cumulative integral values sampled at each segment center:
-            - scalar phi -> shape (N,)
-            - phi shape (N,) -> shape (N,)
-            - phi shape (N, ...) -> shape (N, ...)
+        float | np.ndarray
+            If cumulative=True:
+            - scalar phi -> array with shape (N,)
+            - phi shape (N,) -> array with shape (N,)
+            - phi shape (N, ...) -> array with shape (N, ...)
+
+            If cumulative=False:
+            - scalar phi -> scalar total
+            - phi shape (N,) -> scalar total
+            - phi shape (N, ...) -> array with shape (...)
 
         Examples
         --------
         >>> pseg.integrate(2.0)
+        >>> pseg.integrate(2.0, cumulative=True)
         >>> pseg.integrate(np.array([1.0, 2.0, 3.0]))
         >>> pseg.integrate(lambda ctx: ctx["s"])
         >>> pseg.integrate(lambda ctx: np.stack([ctx["cx"], ctx["cy"]], axis=1))
@@ -113,16 +126,18 @@ class PolySegment:
         phi_value = self._normalize_integrand(phi)
 
         if isinstance(phi_value, float):
-            return np.cumsum(ds) * phi_value
+            weighted = ds * phi_value
+            return np.cumsum(weighted) if cumulative else np.sum(weighted)
 
         assert isinstance(phi_value, np.ndarray)
 
         if phi_value.ndim == 1:
-            return np.cumsum(ds * phi_value)
+            weighted = ds * phi_value
         else:
             weight_shape = (len(ds),) + (1,) * (phi_value.ndim - 1)
             weighted = ds.reshape(weight_shape) * phi_value
-            return np.cumsum(weighted, axis=0)
+
+        return np.cumsum(weighted, axis=0) if cumulative else np.sum(weighted, axis=0)
 
 
 def get_com_spiral(pseg: 'PolySegment', density_fn: Callable[[GeometryContext], float | np.ndarray] | None = None) -> tuple[np.ndarray, np.ndarray]:
@@ -134,5 +149,5 @@ def get_com_spiral(pseg: 'PolySegment', density_fn: Callable[[GeometryContext], 
         phi = np.column_stack(
             (ctx["cx"] * density, ctx["cy"] * density, np.ones_like(ctx["s"])*density))
 
-    I = pseg.integrate(phi)
+    I = pseg.integrate(phi, cumulative=True)
     return I[:, 0] / I[:, 2], I[:, 1] / I[:, 2]
