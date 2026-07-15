@@ -70,13 +70,43 @@ class TestPolySegment(unittest.TestCase):
         result = self.poly.integrate(values)
         np.testing.assert_allclose(result, [[1.0, 2.0], [4.0, 6.0]])
 
-    def test_integrate_with_density_fn(self):
-        # density_fn doubles weights
-        def density_fn(s):
-            return 2.0
+    def test_integrate_with_weighted_callable(self):
         values = np.array([2.0, 4.0])
-        result = self.poly.integrate(values, density_fn=density_fn)
+        result = self.poly.integrate(lambda ctx: 2.0 * values)
         np.testing.assert_allclose(result, [4.0, 12.0])
+
+    def test_integrate_callable_returns_scalar(self):
+        result = self.poly.integrate(lambda ctx: 2.0)
+        np.testing.assert_allclose(result, [2.0, 4.0])
+
+    def test_integrate_callable_returns_1d(self):
+        result = self.poly.integrate(lambda ctx: np.array([2.0, 4.0]))
+        np.testing.assert_allclose(result, [2.0, 6.0])
+
+    def test_integrate_callable_returns_2d(self):
+        result = self.poly.integrate(
+            lambda ctx: np.array([[1.0, 2.0], [3.0, 4.0]])
+        )
+        np.testing.assert_allclose(result, [[1.0, 2.0], [4.0, 6.0]])
+
+    def test_integrate_callable_uses_context_s(self):
+        # Midpoint arclengths are [0.5, 1.5] for two unit segments.
+        result = self.poly.integrate(lambda ctx: ctx["s"])
+        np.testing.assert_allclose(result, [0.5, 2.0])
+
+    def test_integrate_callable_wrong_shape_raises(self):
+        with self.assertRaises(ValueError):
+            self.poly.integrate(lambda ctx: np.array([1.0, 2.0, 3.0]))
+
+    def test_integrate_callable_non_numeric_output_raises(self):
+        with self.assertRaises(TypeError):
+            self.poly.integrate(np.array(["not", "numeric"]))
+
+    def test_integrate_callable_matches_direct_array(self):
+        values = np.array([2.0, 4.0])
+        direct = self.poly.integrate(values)
+        via_callable = self.poly.integrate(lambda ctx: values)
+        np.testing.assert_allclose(via_callable, direct)
 
     def test_get_com_spiral(self):
         # Segment 0: (0,0)→(1,0), cx=0.5, cy=0.0, length=1.0

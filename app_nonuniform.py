@@ -6,8 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def density_fn(s):
-    return 1/(np.pi + s)
+def density_fn(ctx):
+    return 1/(np.pi + ctx["s"])
 
 
 shape = Ellipse(1, 1, 100)
