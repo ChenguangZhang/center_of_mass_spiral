@@ -1,7 +1,8 @@
-from shapes import Ellipse
-from poly_segment import PolySegment, get_com_spiral
-from plotter import plot_polysegment
-import operations
+from center_of_mass_spiral import (
+    Ellipse,
+    PolySegment, get_com_spiral,
+    plot_polysegment, repeat
+)
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -13,7 +14,7 @@ def density_fn(ctx):
 shape = Ellipse(1, 1, 100)
 
 vl = shape.get_vertex_list()
-vl = operations.repeat(vl, 10)
+vl = repeat(vl, 10)
 
 pseg = PolySegment(vl)
 

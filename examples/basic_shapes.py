@@ -1,7 +1,8 @@
-from shapes import Ellipse, NGon, Parabola, Flower
-from poly_segment import PolySegment, get_com_spiral
-from plotter import plot_polysegment
-import operations
+from center_of_mass_spiral import (
+    Ellipse, NGon, Parabola, Flower,
+    PolySegment, get_com_spiral,
+    plot_polysegment, repeat
+)
 import matplotlib.pyplot as plt
 
 shapes = [
@@ -16,7 +17,7 @@ shapes = [
 plt.figure(figsize=(12, 8))
 for i, shape in enumerate(shapes):
     vl = shape.get_vertex_list()
-    vl = operations.repeat(vl, 10)
+    vl = repeat(vl, 10)
 
     pseg = PolySegment(vl)
     pseg.subdivide(10)

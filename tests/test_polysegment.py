@@ -1,8 +1,6 @@
 import unittest
 import numpy as np
-from vertex_list import VertexList
-from segment import Segment
-from poly_segment import PolySegment, get_com_spiral
+from center_of_mass_spiral import VertexList, Segment, PolySegment, get_com_spiral
 
 
 class TestDiscreteCircle(unittest.TestCase):
