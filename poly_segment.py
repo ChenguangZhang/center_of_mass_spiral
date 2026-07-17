@@ -22,6 +22,10 @@ class PolySegment:
         self.delta = np.array([seg.delta for seg in self.segments])
         s_vert = np.concatenate(([0], np.cumsum(self.delta)))
         self.s = 0.5 * (s_vert[:-1] + s_vert[1:])
+        dx = np.array([seg.x2 - seg.x1 for seg in self.segments])
+        dy = np.array([seg.y2 - seg.y1 for seg in self.segments])
+        self.T = np.column_stack((dx, dy)) / self.delta[:, None]
+        self.N = np.column_stack((self.T[:, 1], -self.T[:, 0]))
 
     def __len__(self):
         return len(self.segments)
@@ -52,6 +56,8 @@ class PolySegment:
             "cx": self.cx,
             "cy": self.cy,
             "delta": self.delta,
+            "T": self.T,
+            "N": self.N,
             "index": np.arange(len(self.segments))
         }
 

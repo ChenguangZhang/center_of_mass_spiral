@@ -7,20 +7,34 @@ from poly_segment import PolySegment, get_com_spiral
 
 class TestDiscreteCircle(unittest.TestCase):
     def setUp(self):
-        self.n = 5  # number of sides of the discrete circle
+        self.c5 = self.make_circle(5)
+        self.c100 = self.make_circle(100)
+
+    def make_circle(self, n):
         vertices = np.array([
             [np.cos(theta), np.sin(theta), theta]
-            for theta in np.linspace(0, 2 * np.pi, num=self.n+1)
+            for theta in np.linspace(0, 2 * np.pi, num=n+1)
         ])
-        self.vl = VertexList(name="UnitCircle", vertices=vertices,
+        vl = VertexList(name="Circle" + str(n), vertices=vertices,
                              is_closed=True, is_discrete=True)
-        self.poly = PolySegment(self.vl)
+        return PolySegment(vl)
 
     def test_circle_perimeter(self):
-        # The perimeter of a unit circle is 2 * pi
-        perimeter = self.poly.integrate(1.0)
-        ref = np.sin(2*np.pi/(2*self.n)) * self.n*2.0
+        perimeter = self.c5.integrate(1.0)
+        ref = np.sin(2*np.pi/(2*5)) * 5*2.0
         np.testing.assert_allclose(perimeter, ref, rtol=1e-2)
+
+    def test_circle_area(self):
+        area = self.c100.integrate(
+            lambda ctx: ctx["cx"] * ctx["N"][:, 0])
+        ref = np.pi
+        np.testing.assert_allclose(area, ref, rtol=1e-2)
+
+    def test_circle_loop_integration(self):
+        I = self.c100.integrate(
+            lambda ctx: ctx["s"][:, np.newaxis] * ctx["T"])
+        ref = np.array([2*np.pi, 0.0])
+        np.testing.assert_allclose(I, ref, rtol=1e-2, atol=1e-8)
 
 
 class TestPolySegment(unittest.TestCase):
