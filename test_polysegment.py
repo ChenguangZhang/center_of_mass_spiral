@@ -3,7 +3,38 @@ import numpy as np
 from vertex_list import VertexList
 from segment import Segment
 from poly_segment import PolySegment, get_com_spiral
-import operations
+
+
+class TestDiscreteCircle(unittest.TestCase):
+    def setUp(self):
+        self.c5 = self.make_circle(5)
+        self.c100 = self.make_circle(100)
+
+    def make_circle(self, n):
+        vertices = np.array([
+            [np.cos(theta), np.sin(theta), theta]
+            for theta in np.linspace(0, 2 * np.pi, num=n+1)
+        ])
+        vl = VertexList(name="Circle" + str(n), vertices=vertices,
+                             is_closed=True, is_discrete=True)
+        return PolySegment(vl)
+
+    def test_circle_perimeter(self):
+        perimeter = self.c5.integrate(1.0)
+        ref = np.sin(2*np.pi/(2*5)) * 5*2.0
+        np.testing.assert_allclose(perimeter, ref, rtol=1e-2)
+
+    def test_circle_area(self):
+        area = self.c100.integrate(
+            lambda ctx: ctx["C"][:, 0] * ctx["N"][:, 0])
+        ref = np.pi
+        np.testing.assert_allclose(area, ref, rtol=1e-2)
+
+    def test_circle_loop_integration(self):
+        I = self.c100.integrate(
+            lambda ctx: ctx["s"][:, np.newaxis] * ctx["T"])
+        ref = np.array([2*np.pi, 0.0])
+        np.testing.assert_allclose(I, ref, rtol=1e-2, atol=1e-8)
 
 
 class TestPolySegment(unittest.TestCase):
@@ -54,33 +85,80 @@ class TestPolySegment(unittest.TestCase):
         discrete_poly.subdivide(n=5)
         self.assertEqual(len(discrete_poly), 2)
 
-    def test_integrate_1d(self):
+    def test_integrate_1d_cumulative(self):
         # Two equal-length segments (length 1.0 each)
         # Values at segment midpoints: [2.0, 4.0]
         # Expected cumulative weighted average: [2.0, 3.0]
         values = np.array([2.0, 4.0])
-        result = self.poly.integrate(values)
+        result = self.poly.integrate(values, cumulative=True)
         np.testing.assert_allclose(result, [2.0, 6.0])
 
-    def test_integrate_2d(self):
+    def test_integrate_1d_default_total(self):
+        values = np.array([2.0, 4.0])
+        result = self.poly.integrate(values)
+        np.testing.assert_allclose(result, 6.0)
+
+    def test_integrate_2d_cumulative(self):
         # Two equal-length segments; 2D values
         # Values: [[1.0, 2.0], [3.0, 4.0]]
         # Expected cumulative weighted avg: [[1.0, 2.0], [2.0, 3.0]]
         values = np.array([[1.0, 2.0], [3.0, 4.0]])
-        result = self.poly.integrate(values)
+        result = self.poly.integrate(values, cumulative=True)
         np.testing.assert_allclose(result, [[1.0, 2.0], [4.0, 6.0]])
 
-    def test_integrate_with_density_fn(self):
-        # density_fn doubles weights
-        def density_fn(s):
-            return 2.0
+    def test_integrate_2d_total(self):
+        values = np.array([[1.0, 2.0], [3.0, 4.0]])
+        result = self.poly.integrate(values)
+        np.testing.assert_allclose(result, [4.0, 6.0])
+
+    def test_integrate_with_weighted_callable(self):
         values = np.array([2.0, 4.0])
-        result = self.poly.integrate(values, density_fn=density_fn)
+        result = self.poly.integrate(lambda ctx: 2.0 * values, cumulative=True)
         np.testing.assert_allclose(result, [4.0, 12.0])
 
+    def test_integrate_callable_returns_scalar(self):
+        result = self.poly.integrate(lambda ctx: 2.0, cumulative=True)
+        np.testing.assert_allclose(result, [2.0, 4.0])
+
+    def test_integrate_scalar_total(self):
+        result = self.poly.integrate(2.0)
+        np.testing.assert_allclose(result, 4.0)
+
+    def test_integrate_callable_returns_1d(self):
+        result = self.poly.integrate(
+            lambda ctx: np.array([2.0, 4.0]), cumulative=True
+        )
+        np.testing.assert_allclose(result, [2.0, 6.0])
+
+    def test_integrate_callable_returns_2d(self):
+        result = self.poly.integrate(
+            lambda ctx: np.array([[1.0, 2.0], [3.0, 4.0]]),
+            cumulative=True,
+        )
+        np.testing.assert_allclose(result, [[1.0, 2.0], [4.0, 6.0]])
+
+    def test_integrate_callable_uses_context_s(self):
+        # Midpoint arclengths are [0.5, 1.5] for two unit segments.
+        result = self.poly.integrate(lambda ctx: ctx["s"], cumulative=True)
+        np.testing.assert_allclose(result, [0.5, 2.0])
+
+    def test_integrate_callable_wrong_shape_raises(self):
+        with self.assertRaises(ValueError):
+            self.poly.integrate(lambda ctx: np.array([1.0, 2.0, 3.0]))
+
+    def test_integrate_callable_non_numeric_output_raises(self):
+        with self.assertRaises(TypeError):
+            self.poly.integrate(np.array(["not", "numeric"]))
+
+    def test_integrate_callable_matches_direct_array(self):
+        values = np.array([2.0, 4.0])
+        direct = self.poly.integrate(values)
+        via_callable = self.poly.integrate(lambda ctx: values)
+        np.testing.assert_allclose(via_callable, direct)
+
     def test_get_com_spiral(self):
-        # Segment 0: (0,0)→(1,0), cx=0.5, cy=0.0, length=1.0
-        # Segment 1: (1,0)→(1,1), cx=1.0, cy=0.5, length=1.0
+        # Segment 0: (0,0)→(1,0), c=(0.5, 0.0), length=1.0
+        # Segment 1: (1,0)→(1,1), c=(1.0, 0.5), length=1.0
         cx, cy = get_com_spiral(self.poly)
         np.testing.assert_allclose(cx, [0.5, 0.75])
         np.testing.assert_allclose(cy, [0.0, 0.25])
