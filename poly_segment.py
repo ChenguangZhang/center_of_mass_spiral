@@ -17,8 +17,9 @@ class PolySegment:
         self.__update_geometric_properties()
 
     def __update_geometric_properties(self):
-        self.cx = np.array([seg.cx for seg in self.segments])
-        self.cy = np.array([seg.cy for seg in self.segments])
+        cx = np.array([seg.cx for seg in self.segments])
+        cy = np.array([seg.cy for seg in self.segments])
+        self.C = np.column_stack((cx, cy))
         self.delta = np.array([seg.delta for seg in self.segments])
         s_vert = np.concatenate(([0], np.cumsum(self.delta)))
         self.s = 0.5 * (s_vert[:-1] + s_vert[1:])
@@ -53,8 +54,7 @@ class PolySegment:
     def context(self) -> GeometryContext:
         return {
             "s": self.s,
-            "cx": self.cx,
-            "cy": self.cy,
+            "C": self.C,
             "delta": self.delta,
             "T": self.T,
             "N": self.N,
@@ -124,7 +124,7 @@ class PolySegment:
         >>> pseg.integrate(2.0, cumulative=True)
         >>> pseg.integrate(np.array([1.0, 2.0, 3.0]))
         >>> pseg.integrate(lambda ctx: ctx["s"])
-        >>> pseg.integrate(lambda ctx: np.stack([ctx["cx"], ctx["cy"]], axis=1))
+        >>> pseg.integrate(lambda ctx: ctx["C"])
         """
 
         ds = self.delta
@@ -148,12 +148,14 @@ class PolySegment:
 
 def get_com_spiral(pseg: 'PolySegment', density_fn: Callable[[GeometryContext], float | np.ndarray] | None = None) -> tuple[np.ndarray, np.ndarray]:
     if density_fn is None:
-        phi = np.array([[seg.cx, seg.cy, 1.0] for seg in pseg.segments])
+        phi = np.column_stack((pseg.C, np.ones(len(pseg))))
     else:
         ctx = pseg.context()
         density = density_fn(ctx)
+        if np.isscalar(density):
+            density = np.full(len(pseg), float(density))
         phi = np.column_stack(
-            (ctx["cx"] * density, ctx["cy"] * density, np.ones_like(ctx["s"])*density))
+            (ctx["C"] * density[:, None], density))
 
     I = pseg.integrate(phi, cumulative=True)
     return I[:, 0] / I[:, 2], I[:, 1] / I[:, 2]

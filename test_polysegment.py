@@ -26,7 +26,7 @@ class TestDiscreteCircle(unittest.TestCase):
 
     def test_circle_area(self):
         area = self.c100.integrate(
-            lambda ctx: ctx["cx"] * ctx["N"][:, 0])
+            lambda ctx: ctx["C"][:, 0] * ctx["N"][:, 0])
         ref = np.pi
         np.testing.assert_allclose(area, ref, rtol=1e-2)
 
@@ -157,8 +157,8 @@ class TestPolySegment(unittest.TestCase):
         np.testing.assert_allclose(via_callable, direct)
 
     def test_get_com_spiral(self):
-        # Segment 0: (0,0)→(1,0), cx=0.5, cy=0.0, length=1.0
-        # Segment 1: (1,0)→(1,1), cx=1.0, cy=0.5, length=1.0
+        # Segment 0: (0,0)→(1,0), c=(0.5, 0.0), length=1.0
+        # Segment 1: (1,0)→(1,1), c=(1.0, 0.5), length=1.0
         cx, cy = get_com_spiral(self.poly)
         np.testing.assert_allclose(cx, [0.5, 0.75])
         np.testing.assert_allclose(cy, [0.0, 0.25])
