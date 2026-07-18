@@ -1,6 +1,12 @@
 """Center of Mass Spiral - A library for computing center of mass spirals for 2D curves."""
 
-__version__ = "0.1.0"
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("center_of_mass_spiral")
+except PackageNotFoundError:
+    # Package is not installed, use a default version
+    __version__ = "unknown"
 
 from center_of_mass_spiral.vertex_list import VertexList
 from center_of_mass_spiral.segment import Segment
