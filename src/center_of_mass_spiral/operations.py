@@ -1,9 +1,5 @@
 import numpy as np
 from .vertex_list import VertexList
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .poly_segment import PolySegment, DensityFunction
 
 
 def repeat(vl: VertexList, num_loop: int) -> VertexList:
