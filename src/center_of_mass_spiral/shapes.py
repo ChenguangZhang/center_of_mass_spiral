@@ -1,6 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
-from center_of_mass_spiral.vertex_list import VertexList
+from .vertex_list import VertexList
 
 
 class Shape(ABC):

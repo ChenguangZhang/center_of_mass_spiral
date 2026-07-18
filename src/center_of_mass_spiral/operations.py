@@ -1,9 +1,9 @@
 import numpy as np
-from center_of_mass_spiral.vertex_list import VertexList
+from .vertex_list import VertexList
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from center_of_mass_spiral.poly_segment import PolySegment, DensityFunction
+    from .poly_segment import PolySegment, DensityFunction
 
 
 def repeat(vl: VertexList, num_loop: int) -> VertexList:
