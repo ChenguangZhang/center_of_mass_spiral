@@ -12,7 +12,7 @@ from center_of_mass_spiral.vertex_list import VertexList
 from center_of_mass_spiral.segment import Segment
 from center_of_mass_spiral.poly_segment import PolySegment, get_com_spiral, GeometryContext
 from center_of_mass_spiral.operations import repeat
-from center_of_mass_spiral.shapes import Ellipse, NGon, Parabola, Flower
+from center_of_mass_spiral.shapes import Ellipse, NGon, Parabola, Flower, Shape
 from center_of_mass_spiral.plotter import plot_polysegment
 
 __all__ = [
@@ -27,5 +27,6 @@ __all__ = [
     "NGon",
     "Parabola",
     "Flower",
+    "Shape",
     "plot_polysegment",
 ]

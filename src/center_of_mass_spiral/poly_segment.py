@@ -1,6 +1,6 @@
 import numpy as np
-from center_of_mass_spiral.vertex_list import VertexList
-from center_of_mass_spiral.segment import Segment
+from .vertex_list import VertexList
+from .segment import Segment
 from typing import Callable
 
 GeometryContext = dict[str, np.ndarray]
