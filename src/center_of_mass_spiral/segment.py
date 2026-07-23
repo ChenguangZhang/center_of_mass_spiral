@@ -11,6 +11,11 @@ class Segment:
         else:
             self.delta = self.__length()
 
+        dx = x2 - x1
+        dy = y2 - y1
+        self.T = np.array([dx, dy]) / self.delta
+        self.N = np.array([self.T[1], -self.T[0]])
+
     def __length(self):
         return np.sqrt((self.x2 - self.x1)**2 + (self.y2 - self.y1)**2)
 
