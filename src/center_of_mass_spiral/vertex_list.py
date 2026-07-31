@@ -8,6 +8,7 @@ class VertexList:
     vertices: np.ndarray
     is_closed: bool
     is_discrete: bool
+    num_repeat: int = 1
 
     def __post_init__(self):
         vertices_copy = self.vertices.copy()
