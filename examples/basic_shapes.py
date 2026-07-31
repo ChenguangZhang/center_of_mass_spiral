@@ -14,7 +14,7 @@ shapes = [
     Parabola(0, 1, 100)
 ]
 
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(6, 4))
 for i, shape in enumerate(shapes):
     vl = shape.get_vertex_list()
     vl = repeat(vl, 10)

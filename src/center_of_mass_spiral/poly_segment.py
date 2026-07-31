@@ -13,20 +13,18 @@ class PolySegment:
         for i in range(len(vertex_list.vertices)-1):
             x1, y1, t1 = vertex_list.vertices[i]
             x2, y2, t2 = vertex_list.vertices[i+1]
-            self.segments.append(Segment(x1, y1, x2, y2))
+            self.segments.append(
+                Segment(np.array([x1, y1]), np.array([x2, y2])))
         self.__update_geometric_properties()
 
     def __update_geometric_properties(self):
-        cx = np.array([seg.cx for seg in self.segments])
-        cy = np.array([seg.cy for seg in self.segments])
-        self.C = np.column_stack((cx, cy))
+        self.C = np.array([seg.C for seg in self.segments])
         self.delta = np.array([seg.delta for seg in self.segments])
         s_vert = np.concatenate(([0], np.cumsum(self.delta)))
         self.s = 0.5 * (s_vert[:-1] + s_vert[1:])
-        dx = np.array([seg.x2 - seg.x1 for seg in self.segments])
-        dy = np.array([seg.y2 - seg.y1 for seg in self.segments])
-        self.T = np.column_stack((dx, dy)) / self.delta[:, None]
-        self.N = np.column_stack((self.T[:, 1], -self.T[:, 0]))
+
+        self.T = np.array([seg.T for seg in self.segments])
+        self.N = np.array([seg.N for seg in self.segments])
 
     def __len__(self):
         return len(self.segments)
