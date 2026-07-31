@@ -2,22 +2,23 @@ import numpy as np
 
 
 class Segment:
-    def __init__(self, x1, y1, x2, y2, length=None):
-        self.x1, self.y1, self.x2, self.y2 = x1, y1, x2, y2
-        self.cx = (x1 + x2) / 2
-        self.cy = (y1 + y2) / 2
+    def __init__(self, a, b, length=None):
+        self.a = a
+        self.b = b
+        self.C = (a + b) * 0.5
         if length is not None:
             self.delta = length
         else:
             self.delta = self.__length()
 
-        dx = x2 - x1
-        dy = y2 - y1
-        self.T = np.array([dx, dy]) / self.delta
-        self.N = np.array([self.T[1], -self.T[0]])
+        deltav = b - a
+        self.T = deltav / self.delta
+        if len(a) == 2:
+            self.N = np.array([self.T[1], -self.T[0]])
 
     def __length(self):
-        return np.sqrt((self.x2 - self.x1)**2 + (self.y2 - self.y1)**2)
+        deltav = self.b - self.a
+        return np.linalg.norm(deltav)
 
     def subdivide(self, n):
         '''
@@ -25,14 +26,13 @@ class Segment:
         |---------------| =>
         |-|-|-|-|-|-|-|-|
         '''
-        x = np.linspace(self.x1, self.x2, n+1)
-        y = np.linspace(self.y1, self.y2, n+1)
-        new_segments = []
+        inc = (self.b - self.a) / n
         delta_n = self.delta / n
+        new_segments = []
         for i in range(n):
             new_segments.append(
-                Segment(x[i], y[i], x[i+1], y[i+1], length=delta_n))
+                Segment(self.a + i * inc, self.a + (i + 1) * inc, length=delta_n))
         return new_segments
 
     def __repr__(self):
-        return f'Segment({self.x1}, {self.y1}, {self.x2}, {self.y2})'
+        return f'Segment({self.a} to {self.b})'
