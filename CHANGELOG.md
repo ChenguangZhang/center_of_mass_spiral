@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2026-08-01
+
+### Added
+- Complex path integration support via `is_complex` parameter in `integrate()` method
+
+### Changed
+- Optimized plotting performance with 200x speedup
+- Refactored internal data structures:
+  - Replaced separate `cx` and `cy` arrays with unified vector `C`
+  - Added tangent (`T`) and normal (`N`) vector arrays (2D only)
+  - Moved geometric properties (`C`, `T`, `N`) to `Segment` level for better encapsulation
+
 ## [0.1.3] - 2026-07-17
 
 ### Changed
