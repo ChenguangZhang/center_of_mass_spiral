@@ -61,9 +61,9 @@ class PolySegment:
 
     def _normalize_integrand(
         self,
-        phi: float |
+        phi: float | complex |
         np.ndarray |
-        Callable[[GeometryContext], float | np.ndarray]
+        Callable[[GeometryContext], float | complex | np.ndarray]
     ) -> float | np.ndarray:
         if callable(phi):
             phi = phi(self.context())
@@ -82,9 +82,10 @@ class PolySegment:
 
     def integrate(
         self,
-        phi: float | np.ndarray | Callable[[GeometryContext], float | np.ndarray],
+        phi: float | complex | np.ndarray | Callable[[GeometryContext], float | complex | np.ndarray],
         cumulative: bool = False,
-    ) -> float | np.ndarray:
+        is_complex: bool = False
+    ) -> float | complex | np.ndarray:
         r"""
         Do
         $$
@@ -96,24 +97,27 @@ class PolySegment:
         ----------
         phi
             Integrand. Supported forms:
-            - single number
+            - single number (real or complex)
             - np.array with shape (N,) or (N, ...), where N = len(segments)
             - callable: phi(context) -> numeric scalar or numpy array with leading shape (N, ...)
         cumulative
             When False, return the total integral over all segments.
             When True, return cumulative integral values sampled at each segment center.
+        is_complex
+            If True, perform complex path integration where ds is treated as a 
+            complex differential dz = dx + i*dy. Default is False.
 
         Returns
         -------
-        float | np.ndarray
+        float | complex | np.ndarray
             If cumulative=True:
             - scalar phi -> array with shape (N,)
             - phi shape (N,) -> array with shape (N,)
             - phi shape (N, ...) -> array with shape (N, ...)
 
             If cumulative=False:
-            - scalar phi -> scalar total
-            - phi shape (N,) -> scalar total
+            - scalar phi -> scalar total (real or complex)
+            - phi shape (N,) -> scalar total (real or complex)
             - phi shape (N, ...) -> array with shape (...)
 
         Examples
@@ -123,9 +127,16 @@ class PolySegment:
         >>> pseg.integrate(np.array([1.0, 2.0, 3.0]))
         >>> pseg.integrate(lambda ctx: ctx["s"])
         >>> pseg.integrate(lambda ctx: ctx["C"])
+        >>> # Complex path integral (e.g., residue calculation)
+        >>> pseg.integrate(lambda ctx: 1.0/(ctx["C"][:, 0] + 1j*ctx["C"][:, 1]), 
+        ...                is_complex=True)
         """
 
-        ds = self.delta
+        if is_complex:
+            deltav = self.delta[:, None] * self.T
+            ds = deltav[:, 0] + 1j * deltav[:, 1]
+        else:
+            ds = self.delta
 
         phi_value = self._normalize_integrand(phi)
 

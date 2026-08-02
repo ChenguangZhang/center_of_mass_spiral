@@ -34,6 +34,19 @@ class TestDiscreteCircle(unittest.TestCase):
         ref = np.array([2*np.pi, 0.0])
         np.testing.assert_allclose(I, ref, rtol=1e-2, atol=1e-8)
 
+    # complex integration
+    def test_circle_complex_integration(self):
+        # caller is responsible for
+        # 1. creating "z" from "C" in the context
+        def complex_integrand(ctx):
+            z = ctx["C"][:, 0] + 1j * ctx["C"][:, 1]
+            return 1.0/z
+        # 2. set is_complex=True in the integrate() call
+        residual = self.c100.integrate(
+            complex_integrand, is_complex=True) / (2 * np.pi * 1j)
+        ref = 1.0
+        np.testing.assert_allclose(residual, ref, rtol=1e-2)
+
 
 class TestPolySegment(unittest.TestCase):
 
