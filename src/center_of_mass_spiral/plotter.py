@@ -27,12 +27,12 @@ def plot_polysegment(pseg: PolySegment, ax=None, show_detail=False, **kwargs):
 
     if show_detail:
         # plot segment normals
-        ax.plot(V[:, 0], V[:, 1], 'ro', markersize=2)
+        ax.plot(V[:, 0], V[:, 1], color='gray', marker='o', markersize=2)
         C = pseg.C
         N = pseg.N
         ref_length = np.mean(pseg.delta)
 
-        plt.plot(C[:, 0], C[:, 1], 'bo', markersize=3)
+        plt.plot(C[:, 0], C[:, 1], 'go', markersize=3)
         plt.quiver(C[:, 0], C[:, 1], N[:, 0], N[:, 1],
-                   color='r', angles='xy', scale_units='xy', scale=1.0/ref_length, width=0.003)
+                   color='g', angles='xy', scale_units='xy', scale=1.0/ref_length, width=0.003)
     return ax
