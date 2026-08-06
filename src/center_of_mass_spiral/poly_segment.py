@@ -11,8 +11,8 @@ class PolySegment:
         self.vertex_list = vertex_list
         self.segments: list[Segment] = []
         for i in range(len(vertex_list.vertices)-1):
-            x1, y1, t1 = vertex_list.vertices[i]
-            x2, y2, t2 = vertex_list.vertices[i+1]
+            x1, y1 = vertex_list.vertices[i]
+            x2, y2 = vertex_list.vertices[i+1]
             self.segments.append(
                 Segment(np.array([x1, y1]), np.array([x2, y2])))
         self.__update_geometric_properties()

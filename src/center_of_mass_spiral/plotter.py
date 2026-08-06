@@ -5,7 +5,7 @@ from .poly_segment import PolySegment
 
 # from .perf_tools import timing_decorator
 # @timing_decorator # disabled after profiling
-def plot_polysegment(pseg: PolySegment, ax=None, **kwargs):
+def plot_polysegment(pseg: PolySegment, ax=None, show_detail=False, **kwargs):
     if ax is None:
         fig, ax = plt.subplots()
     vl = pseg.vertex_list
@@ -24,4 +24,23 @@ def plot_polysegment(pseg: PolySegment, ax=None, **kwargs):
         V = vl.vertices[:n_first_loop, :]
 
     ax.plot(V[:, 0], V[:, 1], **kwargs)
+
+    if show_detail:
+        # plot segment normals
+        ax.plot(V[:, 0], V[:, 1], color='gray', marker='o', markersize=2)
+        C = pseg.C
+        N = pseg.N
+        T = pseg.T
+        ref_length = np.mean(pseg.delta)
+
+        # segment centroid
+        plt.plot(C[:, 0], C[:, 1], 'go', markersize=3)
+
+        # normal vector
+        plt.quiver(C[:, 0], C[:, 1], N[:, 0], N[:, 1],
+                   color='g', angles='xy', scale_units='xy', scale=1.0/ref_length, width=0.003)
+
+        # tangent vector
+        plt.quiver(C[:, 0], C[:, 1], T[:, 0], T[:, 1],
+                   color='b', angles='xy', scale_units='xy', scale=1.0/ref_length, width=0.003)
     return ax

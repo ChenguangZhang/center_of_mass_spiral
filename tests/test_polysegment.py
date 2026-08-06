@@ -10,7 +10,7 @@ class TestDiscreteCircle(unittest.TestCase):
 
     def make_circle(self, n):
         vertices = np.array([
-            [np.cos(theta), np.sin(theta), theta]
+            [np.cos(theta), np.sin(theta)]
             for theta in np.linspace(0, 2 * np.pi, num=n+1)
         ])
         vl = VertexList(name="Circle" + str(n), vertices=vertices,
@@ -52,11 +52,11 @@ class TestPolySegment(unittest.TestCase):
 
     def setUp(self):
         # Create a basic vertex list with 3 points, resulting in 2 segments
-        # vertices shape is (N, 3), representing (x, y, t)
+        # vertices shape is (N, 2), representing (x, y)
         vertices = np.array([
-            [0.0, 0.0, 0.0],
-            [1.0, 0.0, 1.0],
-            [1.0, 1.0, 2.0]
+            [0.0, 0.0],
+            [1.0, 0.0],
+            [1.0, 1.0]
         ])
         self.vl = VertexList(name="TestShape", vertices=vertices,
                              is_closed=False, is_discrete=False)

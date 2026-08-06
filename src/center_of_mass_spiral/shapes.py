@@ -16,7 +16,7 @@ class NGon(Shape):
 
     def get_vertex_list(self) -> VertexList:
         theta = np.linspace(0, 2*np.pi, self.n+1)
-        xy = self.r * np.array([(np.cos(t), np.sin(t), t) for t in theta])
+        xy = self.r * np.array([(np.cos(t), np.sin(t)) for t in theta])
         return VertexList(
             name="polygon-" + str(self.n),
             vertices=xy,
@@ -32,7 +32,7 @@ class Parabola(Shape):
         self.num_sample = num_sample
 
     def get_vertex_list(self) -> VertexList:
-        xy = np.array([(t, t*t, t)
+        xy = np.array([(t, t*t)
                       for t in np.linspace(self.xmin, self.xmax, self.num_sample)])
         return VertexList(
             name="Parabola",
@@ -43,18 +43,20 @@ class Parabola(Shape):
 
 
 class Ellipse(Shape):
-    def __init__(self, a, b, num_sample):
+    def __init__(self, a, b, num_sample, theta_start=0, theta_end=2*np.pi):
         self.a = a
         self.b = b
         self.num_sample = num_sample
+        self.theta_start = theta_start
+        self.theta_end = theta_end
 
     def get_vertex_list(self) -> VertexList:
-        theta = np.linspace(0, 2*np.pi, self.num_sample+1)
-        xy = np.array([(self.a*np.cos(t), self.b*np.sin(t), t) for t in theta])
+        theta = np.linspace(self.theta_start, self.theta_end, self.num_sample+1)
+        xy = np.array([(self.a*np.cos(t), self.b*np.sin(t)) for t in theta])
         return VertexList(
             name="Ellipse",
             vertices=xy,
-            is_closed=True,
+            is_closed= True if self.theta_end - self.theta_start >= 2*np.pi else False,
             is_discrete=False
         )
 
@@ -71,8 +73,7 @@ class Flower(Shape):
         xy = np.array([
             (
                 (self.r + self.deltar * np.sin(self.f*t))*np.cos(t),
-                (self.r + self.deltar * np.sin(self.f*t))*np.sin(t),
-                t
+                (self.r + self.deltar * np.sin(self.f*t))*np.sin(t)
             ) for t in theta])
         return VertexList(
             name="Flower",
