@@ -43,18 +43,20 @@ class Parabola(Shape):
 
 
 class Ellipse(Shape):
-    def __init__(self, a, b, num_sample):
+    def __init__(self, a, b, num_sample, theta_start=0, theta_end=2*np.pi):
         self.a = a
         self.b = b
         self.num_sample = num_sample
+        self.theta_start = theta_start
+        self.theta_end = theta_end
 
     def get_vertex_list(self) -> VertexList:
-        theta = np.linspace(0, 2*np.pi, self.num_sample+1)
+        theta = np.linspace(self.theta_start, self.theta_end, self.num_sample+1)
         xy = np.array([(self.a*np.cos(t), self.b*np.sin(t)) for t in theta])
         return VertexList(
             name="Ellipse",
             vertices=xy,
-            is_closed=True,
+            is_closed= True if self.theta_end - self.theta_start >= 2*np.pi else False,
             is_discrete=False
         )
 
