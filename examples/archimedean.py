@@ -10,7 +10,7 @@ class Archimedean(Shape):
         self.n = n
 
         t = np.linspace(0, self.theta_max, self.n+1)
-        self.xy = np.vstack((t * np.cos(t), t * np.sin(t), t)).T
+        self.xy = np.vstack((t * np.cos(t), t * np.sin(t))).T
 
     def get_vertex_list(self) -> VertexList:
         return VertexList(
