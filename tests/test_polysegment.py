@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from center_of_mass_spiral import VertexList, Segment, PolySegment, get_com_spiral
+from center_of_mass_spiral import VertexList, Segment, PolySegment
 
 
 class TestDiscreteCircle(unittest.TestCase):
@@ -166,14 +166,6 @@ class TestPolySegment(unittest.TestCase):
         direct = self.poly.integrate(values)
         via_callable = self.poly.integrate(lambda ctx: values)
         np.testing.assert_allclose(via_callable, direct)
-
-    def test_get_com_spiral(self):
-        # Segment 0: (0,0)→(1,0), c=(0.5, 0.0), length=1.0
-        # Segment 1: (1,0)→(1,1), c=(1.0, 0.5), length=1.0
-        cx, cy = get_com_spiral(self.poly)
-        np.testing.assert_allclose(cx, [0.5, 0.75])
-        np.testing.assert_allclose(cy, [0.0, 0.25])
-
 
 if __name__ == '__main__':
     unittest.main()

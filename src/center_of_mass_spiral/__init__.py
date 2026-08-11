@@ -10,7 +10,8 @@ except PackageNotFoundError:
 
 from center_of_mass_spiral.vertex_list import VertexList
 from center_of_mass_spiral.segment import Segment
-from center_of_mass_spiral.poly_segment import PolySegment, get_com_spiral, GeometryContext
+from center_of_mass_spiral.poly_segment import PolySegment, GeometryContext
+from center_of_mass_spiral.app import get_com_spiral
 from center_of_mass_spiral.operations import repeat, reverse, append, prepend, close, join
 from center_of_mass_spiral.shapes import Ellipse, NGon, Parabola, Flower, Shape
 from center_of_mass_spiral.plotter import plot_polysegment
