@@ -3,7 +3,7 @@ from center_of_mass_spiral.app import contour_integrate
 import numpy as np
 
 shape = Ellipse(2, 2, 32, theta_start=0, theta_end=np.pi)
-residual = contour_integrate(shape, '1/(1+z**2)**2')
+residual = contour_integrate(shape, '1/(1+z**2)**2', auto_close=True)
 
 relative_error = np.abs(residual - np.pi/2.0) / (np.pi/2.0)
 print(f"Complex integration result: {residual}")
