@@ -5,12 +5,15 @@ from center_of_mass_spiral import Shape, PolySegment, get_com_spiral, plot_polys
 
 
 class Archimedean(Shape):
-    def __init__(self, theta_max, n):
+    def __init__(self, R, a, theta_max, n):
+        self.R = R
+        self.a = a
         self.theta_max = theta_max
         self.n = n
 
         t = np.linspace(0, self.theta_max, self.n+1)
-        self.xy = np.vstack((t * np.cos(t), t * np.sin(t))).T
+        self.xy = np.vstack(((self.R+self.a*t) * np.cos(t),
+                            (self.R+self.a*t) * np.sin(t))).T
 
     def get_vertex_list(self) -> VertexList:
         return VertexList(
@@ -21,7 +24,7 @@ class Archimedean(Shape):
         )
 
 
-shape = Archimedean(6*np.pi, 500)
+shape = Archimedean(0, 1, 6*np.pi, 500)
 pseg = PolySegment(shape.get_vertex_list())
 cx, cy = get_com_spiral(pseg)
 
